@@ -116,8 +116,31 @@ using namespace std;
      *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT BE USED
      *  IN THE FINAL SUBMISSION.
      */
-    int decode(ifstream& in) const;
+	HCNode* currNode = root;
 
+	while(currNode) {
+		
+		if(currNode->symbol)
+		{	
+			return currNode->symbol;
+		}
+		char c = in.get();
+		if (c == 1) 
+		{
+			currNode = currNode->c1;
+		} else if (c == 0)
+		{	
+			currNode = currNode->c0;
+		}
+	}
+	return 0;
+	
+    int decode(ifstream& in) const {
+	/* read in the bits, travel down the tree going left if it is
+	 * 0 and right if 1. when we reach a symbol, return that symbol		*/
+
+
+    }
 };
 
 #endif // HCTREE_CPP
