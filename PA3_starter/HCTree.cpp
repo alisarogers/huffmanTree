@@ -10,22 +10,27 @@ using namespace std;
      *  and leaves[i] points to the leaf node containing byte i.
      */
     void build(const vector<int>& freqs) {
-	priority_queue<int, vector<int>, HCNodePtrComp> minHeap;
+	priority_queue<HCNode, vector<HCNode>, HCNodePtrComp> minHeap;
 
 	int i = 0;
-	HCNode* smallerNode;
-	HCNode* largerNode;
-	HCNode* currNode;
-	HCNode* parentNode;
+	HCNode smallerNode = HCNode(0, 0, 0, 0, 0);
+	HCNode largerNode = HCNode(0, 0, 0, 0, 0);;
+	HCNode currNode = HCNode(0, 0, 0, 0, 0);
+	HCNode parentNode = HCNode(0, 0, 0, 0, 0);	
+	HCTree tree;
+
 	/* insert things into buildQueue, highest priority first*/
 	while(!freqs.empty())
 	{
-		currNode = (freqs[i], i);
-		leaves[i] = currNode;
+		currNode = HCNode(freqs[i], i);
+		tree.leaves[i] = &currNode;
 		i++;
 		minHeap.push(currNode);
-		freqs.pop();
+		//popping for a vector
+		vector<int>::const_iterator it = freqs.begin();
+		freqs.erase(it);
 	}
+
 
 
 	/* extract the two smallest, add them together, reinsert into the minHeap until there's only one left */
@@ -38,7 +43,7 @@ using namespace std;
 		minHeap.push(parentNode);
 	}
 	
-	root = minHeap.top();
+	tree.root = minHeap.top();
     }
 
     /** Write to the given BitOutputStream
@@ -46,7 +51,15 @@ using namespace std;
      *  PRECONDITION: build() has been called, to create the coding
      *  tree, and initialize root pointer and leaves vector.
      */
-    void encode(byte symbol, BitOutputStream& out) const
+    void encode(byte symbol, BitOutputStream& out) const;
+    /** Write to the given ofstream
+     *  the sequence of bits (as ASCII) coding the given symbol.
+     *  PRECONDITION: build() has been called, to create the coding
+     *  tree, and initialize root pointer and leaves vector.
+     *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT 
+     *  BE USED IN THE FINAL SUBMISSION.
+     */
+    void encode(byte symbol, ofstream& out) const
     {
 	int freq = 0;
 	/* go through the leaves vector, find the leaf containing the
@@ -93,15 +106,6 @@ using namespace std;
 
     }
 
-    /** Write to the given ofstream
-     *  the sequence of bits (as ASCII) coding the given symbol.
-     *  PRECONDITION: build() has been called, to create the coding
-     *  tree, and initialize root pointer and leaves vector.
-     *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT 
-     *  BE USED IN THE FINAL SUBMISSION.
-     */
-    void encode(byte symbol, ofstream& out) const;
-
 
     /** Return symbol coded in the next sequence of bits from the stream.
      *  PRECONDITION: build() has been called, to create the coding
@@ -143,4 +147,3 @@ using namespace std;
     }
 };
 
-#endif // HCTREE_CPP

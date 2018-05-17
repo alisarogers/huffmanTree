@@ -6,12 +6,25 @@ typedef unsigned char byte;
 using namespace std;
 
 
-  HCNode(int ct, byte sym, HCNode* left, HCNode* right, HCNode* parent) {
-	count = ct;
-	symbol = sym;
-	c0 = left;
-	c1 = right;
-	p = parent;
-}
+/*HCNode* HCNode(int ct, byte sym, HCNode* left, HCNode* right, HCNode* parent) {
+	HCNode* newNode;
+	newNode = HCNode(ct, sym, left, right, parent);
+	newNode->c0 = left;
+	newNode->c1 = right;
+	newNode->p = parent;
+*/
 
-#endif // HCNODE_CPP
+bool HCNode::operator<(const HCNode& other) {
+	return this->count < other.count;
+	}
+
+
+/* HCNode * newNode(int ct, byte sym, HCNode* left, HCNode* right, HCNode *parent) {
+	
+	HCNode newNode;
+	newNode = HCNode(ct, sym, left, right, parent);
+	newNode.c0 = left;
+	newNode.c1 = right;
+	newNode.p = parent;
+}
+*/

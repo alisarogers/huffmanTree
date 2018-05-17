@@ -27,11 +27,12 @@ public:
  *  of unsigned chars.
  */
 class HCTree {
-private:
+//private:
+public:
     HCNode* root;
     vector<HCNode*> leaves;
 
-public:
+//public:
     // explicit keyword is used to avoid accidental implicit conversions
     explicit HCTree() : root(0) {
         leaves = vector<HCNode*>(256, (HCNode*) 0);
@@ -52,7 +53,7 @@ public:
      *  PRECONDITION: build() has been called, to create the coding
      *  tree, and initialize root pointer and leaves vector.
      */
-    void encode(byte symbol, BitOutputStream& out) const;
+//    void encode(byte symbol, BitOutputStream& out) const;
 
     /** Write to the given ofstream
      *  the sequence of bits (as ASCII) coding the given symbol.
@@ -68,7 +69,7 @@ public:
      *  PRECONDITION: build() has been called, to create the coding
      *  tree, and initialize root pointer and leaves vector.
      */
-    int decode(BitInputStream& in) const;
+//    int decode(BitInputStream& in) const;
 
     /** Return the symbol coded in the next sequence of bits (represented as 
      *  ASCII text) from the ifstream.
