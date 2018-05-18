@@ -24,6 +24,9 @@ int main(int argc, char** argv) {
 	
 	/**1. open the input file for reading*/
 	readIn.open(argv[1]);
+	if(readIn.gcount() == 0) {
+		return 1;
+	}
 	string read;
 	int i = 0;
 	/* read the file header, store in freqs*/

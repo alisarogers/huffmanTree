@@ -56,7 +56,7 @@ int main (int argc, char** argv)
 		}
 	}
 */
-
+	if(toCompress.gcount() == 0) { return 1; }
 	
 	char read;
 	
