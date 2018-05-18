@@ -7,3 +7,7 @@
 5. close input and output files
 
 */
+
+int main() {
+return 0;
+}

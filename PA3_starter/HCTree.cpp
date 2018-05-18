@@ -10,7 +10,7 @@ using namespace std;
      *  and leaves[i] points to the leaf node containing byte i.
      */
     void build(const vector<int>& freqs) {
-	priority_queue<HCNode, vector<HCNode>, HCNodePtrComp> minHeap;
+	priority_queue<HCNode*, vector<HCNode*>, HCNodePtrComp> minHeap;
 
 	vector<int> copy;
 
@@ -18,19 +18,19 @@ using namespace std;
 		copy.push_back(freqs[i]);
 	}
 	int i = 0;
-	HCNode smallerNode = HCNode(0, 0, 0, 0, 0);
+	HCNode  smallerNode = HCNode(0, 0, 0, 0, 0);
 	HCNode largerNode = HCNode(0, 0, 0, 0, 0);;
 	HCNode currNode = HCNode(0, 0, 0, 0, 0);
 	HCNode parentNode = HCNode(0, 0, 0, 0, 0);	
-	HCTree tree;
+	HCTree* tree = new HCTree();
 
 	/* insert things into buildQueue, highest priority first*/
 	while(!copy.empty())
 	{
 		currNode = HCNode(freqs[i], i);
-		tree.leaves[i] = &currNode;
+		tree->leaves[i] = &currNode;
 		i++;
-		minHeap.push(currNode);
+		minHeap.push(&currNode);
 		//popping for a vector
 	//	vector<int>::const_iterator it = freqs.begin();
 		copy.erase(copy.begin());
@@ -40,21 +40,21 @@ using namespace std;
 
 	/* extract the two smallest, add them together, reinsert into the minHeap until there's only one left */
 	while(minHeap.size() > 1) {
-		smallerNode = minHeap.top();
+		smallerNode = HCNode(minHeap.top()->count, minHeap.top()->symbol);
 		minHeap.pop();
-		largerNode = minHeap.top();
+		largerNode = HCNode(minHeap.top()->count, minHeap.top()->symbol);
 		minHeap.pop();
 		parentNode = HCNode(smallerNode.count + largerNode.count, 0, &smallerNode, &largerNode, NULL);
-		minHeap.push(parentNode);
+		minHeap.push(&parentNode);
 	}
 	
-	tree.root = (HCNode*)&minHeap.top();
+	tree->root = (HCNode*)&minHeap.top();
     }
 
     /** Write to the given BitOutputStream
      *  the sequence of bits coding the given symbol.
      *  PRECONDITION: build() has been called, to create the coding
-     *  tree, and initialize root pointer and leaves vector.
+     
      */
   
     /** Write to the given ofstream
@@ -64,16 +64,16 @@ using namespace std;
      *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT 
      *  BE USED IN THE FINAL SUBMISSION.
      */
-    void encode(byte symbol, ofstream& out) 
+    void HCTree::encode(byte symbol, ofstream& out) const 
     {
 	int freq = 0;
 	int i = 0;
 	/* go through the leaves vector, find the leaf containing the
 	 * symbol, get that frequency, then we search starting at the
 	 * root of the tree for that frequency */
-	while(i < HCTree::leaves.size()) {
-		if (HCTree::leaves[i]->symbol = symbol) {
-			freq = HCTree::leaves[i]->count;
+	while(i < this->leaves.size()) {
+		if (this->leaves[i]->symbol = symbol) {
+			freq = this->leaves[i]->count;
 			break;
 		} else { 
 			i++;
@@ -96,11 +96,13 @@ using namespace std;
 		} else if(currNode->c0->symbol = symbol)
 		{
 			//print 0;
+			out << 0;
 			return;
 		}
 		else if(currNode->c0->symbol < symbol)
 		{
 			//print 0;
+			out << 1;
 			currNode = currNode->c1;
 		}
 		else if(symbol < currNode->c0->symbol)
@@ -127,11 +129,11 @@ using namespace std;
      *  IN THE FINAL SUBMISSION.
      */
 	
-    int decode(ifstream& in) {
+    int HCTree::decode(ifstream& in) const {
 	/* read in the bits, travel down the tree going left if it is
 	 * 0 and right if 1. when we reach a symbol, return that symbol		*/
 
-	HCNode* currNode = HCTree::root;
+	HCNode* currNode = this->root;
 
 	while(currNode) {
 		

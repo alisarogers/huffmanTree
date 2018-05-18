@@ -1,3 +1,9 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+
+using namespace std;
 /*  compress.cpp needs to create a Huffman tree, read in a text file, encode it, insert it into the tree, and then write to a new file the encoding.
 1. Open input file for reading
 2. Read bytes from the file. Count the number of occurences of each byte value (put it in freqs[i]. Close the file.
@@ -15,3 +21,29 @@ a sequence of 256 integers at the beginning of the compressed file.
 each line contains a single int written as plain text
 
 */
+
+int main (int argc, char** argv)
+{
+	ifstream toCompress;
+	vector<int> freqs = vector<int>(256, 0);
+	int i;
+	toCompress.open(argv[1]);
+	toCompress.seekg (0, toCompress.end);
+	int endOfFile = toCompress.tellg();
+	toCompress.seekg (0, toCompress.beg);
+	char * buffer = new char[endOfFile];
+	toCompress.read(buffer, endOfFile);
+	if(toCompress.is_open())
+	{
+		for(i = 0; i < endOfFile; i++)
+		{
+				//toCompress.read(buffer, 8);
+
+			freqs[buffer[i]]++;
+
+			cout<<buffer[i]<<"  "<<freqs[buffer[i]]<<endl;
+
+		}
+	}
+}
+
