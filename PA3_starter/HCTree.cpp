@@ -154,19 +154,21 @@ using namespace std;
      *  IN THE FINAL SUBMISSION.
      */
 	
-    int HCTree::decode(ifstream& in) const {
+    string HCTree::decode(ifstream& in) const {
 	/* read in the bits, travel down the tree going left if it is
 	 * 0 and right if 1. when we reach a symbol, return that symbol		*/
 
 	HCNode* currNode = this->root;
-
-	while(currNode) {
-		
-		if(currNode->symbol)
-		{	
-			return currNode->symbol;
-		}
-		char c = in.get();
+	string str;
+	char c;
+	if(!(currNode->c0 || currNode->c1)) {
+		str.push_back(currNode->symbol);
+		currNode = this->root;
+	}
+	
+	while(in.get(c)) {	
+		if(!currNode) { break; }
+		c = c-48;
 		if (c == 1) 
 		{
 			currNode = currNode->c1;
@@ -174,8 +176,12 @@ using namespace std;
 		{	
 			currNode = currNode->c0;
 		}
+		if(!(currNode->c0 || currNode->c1)) {
+			str.push_back(currNode->symbol);
+			currNode = this->root;
+		}
 	}
-	return 0;
+	return str;
 
     }
 

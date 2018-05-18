@@ -7,7 +7,7 @@
 #include "HCNode.h"
 #include "BitInputStream.h"
 #include "BitOutputStream.h"
-
+#include <string>
 using namespace std;
 
 /** A 'function class' for use as the Compare class in a
@@ -78,7 +78,7 @@ public:
      *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT BE USED
      *  IN THE FINAL SUBMISSION.
      */
-    int decode(ifstream& in) const;
+    string decode(ifstream& in) const;
 
 };
 

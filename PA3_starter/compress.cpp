@@ -81,6 +81,7 @@ int main (int argc, char** argv)
 	if(toWrite.is_open()) {
 		for(int i = 0; i < freqs.size(); i++) {
 			toWrite << freqs[i] << endl;
+
 		}
 	}
 
