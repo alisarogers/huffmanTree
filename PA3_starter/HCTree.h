@@ -29,12 +29,12 @@ public:
 class HCTree {
 //private:
 public:
-    HCNode* root;
-    vector<HCNode*> leaves;
+    static HCNode* root;
+    static vector<HCNode*> leaves;
 
 //public:
     // explicit keyword is used to avoid accidental implicit conversions
-    explicit HCTree() : root(0) {
+    explicit HCTree() {
         leaves = vector<HCNode*>(256, (HCNode*) 0);
     }
 

@@ -12,6 +12,11 @@ using namespace std;
     void build(const vector<int>& freqs) {
 	priority_queue<HCNode, vector<HCNode>, HCNodePtrComp> minHeap;
 
+	vector<int> copy;
+
+	for(int i = 0; i<freqs.size(); i++) {
+		copy.push_back(freqs[i]);
+	}
 	int i = 0;
 	HCNode smallerNode = HCNode(0, 0, 0, 0, 0);
 	HCNode largerNode = HCNode(0, 0, 0, 0, 0);;
@@ -20,15 +25,15 @@ using namespace std;
 	HCTree tree;
 
 	/* insert things into buildQueue, highest priority first*/
-	while(!freqs.empty())
+	while(!copy.empty())
 	{
 		currNode = HCNode(freqs[i], i);
 		tree.leaves[i] = &currNode;
 		i++;
 		minHeap.push(currNode);
 		//popping for a vector
-		vector<int>::const_iterator it = freqs.begin();
-		freqs.erase(it);
+	//	vector<int>::const_iterator it = freqs.begin();
+		copy.erase(copy.begin());
 	}
 
 
@@ -39,11 +44,11 @@ using namespace std;
 		minHeap.pop();
 		largerNode = minHeap.top();
 		minHeap.pop();
-		parentNode = HCNode(smallerNode->count + largerNode->count, 0, smallerNode, largerNode, 0);
+		parentNode = HCNode(smallerNode.count + largerNode.count, 0, &smallerNode, &largerNode, NULL);
 		minHeap.push(parentNode);
 	}
 	
-	tree.root = minHeap.top();
+	tree.root = (HCNode*)&minHeap.top();
     }
 
     /** Write to the given BitOutputStream
@@ -51,7 +56,7 @@ using namespace std;
      *  PRECONDITION: build() has been called, to create the coding
      *  tree, and initialize root pointer and leaves vector.
      */
-    void encode(byte symbol, BitOutputStream& out) const;
+  
     /** Write to the given ofstream
      *  the sequence of bits (as ASCII) coding the given symbol.
      *  PRECONDITION: build() has been called, to create the coding
@@ -59,15 +64,16 @@ using namespace std;
      *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT 
      *  BE USED IN THE FINAL SUBMISSION.
      */
-    void encode(byte symbol, ofstream& out) const
+    void encode(byte symbol, ofstream& out) 
     {
 	int freq = 0;
+	int i = 0;
 	/* go through the leaves vector, find the leaf containing the
 	 * symbol, get that frequency, then we search starting at the
 	 * root of the tree for that frequency */
-	while(i < leaves.size()) {
-		if leaves[i]->symbol = symbol {
-			freq = leaves[i]->count;
+	while(i < HCTree::leaves.size()) {
+		if (HCTree::leaves[i]->symbol = symbol) {
+			freq = HCTree::leaves[i]->count;
 			break;
 		} else { 
 			i++;
@@ -80,7 +86,7 @@ using namespace std;
 	 * and if we go left, print 0, and if we go right, print 1
 	*/
 
-	HCNode* currNode = root;
+	HCNode* currNode = HCTree::root;
 	
 	while(currNode)
 	{ 
@@ -111,16 +117,21 @@ using namespace std;
      *  PRECONDITION: build() has been called, to create the coding
      *  tree, and initialize root pointer and leaves vector.
      */
-    int decode(BitInputStream& in) const;
+   // int decode(BitInputStream& in) const;
 
     /** Return the symbol coded in the next sequence of bits (represented as 
      *  ASCII text) from the ifstream.
-     *  PRECONDITION: build() has been called, to create the coding
+     T
      *  tree, and initialize root pointer and leaves vector.
      *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT BE USED
      *  IN THE FINAL SUBMISSION.
      */
-	HCNode* currNode = root;
+	
+    int decode(ifstream& in) {
+	/* read in the bits, travel down the tree going left if it is
+	 * 0 and right if 1. when we reach a symbol, return that symbol		*/
+
+	HCNode* currNode = HCTree::root;
 
 	while(currNode) {
 		
@@ -138,12 +149,7 @@ using namespace std;
 		}
 	}
 	return 0;
-	
-    int decode(ifstream& in) const {
-	/* read in the bits, travel down the tree going left if it is
-	 * 0 and right if 1. when we reach a symbol, return that symbol		*/
-
 
     }
-};
+
 
