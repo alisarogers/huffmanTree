@@ -38,9 +38,9 @@ int main (int argc, char** argv)
 */
 	int i;
 	toCompress.open(argv[1]);
-	toCompress.seekg (0, toCompress.end);
-	int endOfFile = toCompress.tellg();
-	toCompress.seekg (0, toCompress.beg);
+///	toCompress.seekg (0, toCompress.end);
+//	int endOfFile = toCompress.tellg();
+//	toCompress.seekg (0, toCompress.beg);
 //	char * buffer = new char[endOfFile];
 //	toCompress.read(buffer, endOfFile);
 /*	if(toCompress.is_open())
@@ -61,9 +61,9 @@ int main (int argc, char** argv)
 	char read;
 	
 	/* increases the frequency of each byte every time it occurs */
-	while(toCompress.peek() != EOF){
-		toCompress.get(read);
-		freqs[read] = freqs[read] + 1;
+	while(toCompress.get(read)){
+//		toCompress.get(read);
+		freqs[(int)read] = freqs[(int)read] + 1;
 	}
 
 	/* close the input file*/	
@@ -94,8 +94,8 @@ int main (int argc, char** argv)
 	 * sequence of bits to the output file after the header. 
 	 */
 	
-	while(toCompress.peek() != EOF){
-		toCompress.get(read);
+	while(toCompress.get(read)){
+//		toCompress.get(read);
 		tree->encode(read, toWrite);
 	}
 	

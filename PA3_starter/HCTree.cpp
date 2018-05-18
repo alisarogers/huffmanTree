@@ -14,19 +14,42 @@ using namespace std;
     void HCTree::build(const vector<int>& freqs) {
 	priority_queue<HCNode*, vector<HCNode*>, HCNodePtrComp> minHeap;
 
-	vector<int> copy;
 
-	for(int i = 0; i<freqs.size(); i++) {
-		copy.push_back(freqs[i]);
-	}
-	int i = 0;
-	HCNode  smallerNode = HCNode(0, 0, 0, 0, 0);
-	HCNode largerNode = HCNode(0, 0, 0, 0, 0);;
-	HCNode currNode = HCNode(0, 0, 0, 0, 0);
-	HCNode parentNode = HCNode(0, 0, 0, 0, 0);	
+	HCNode * smallerNode;
+	HCNode * largerNode;
+	HCNode * currNode;
+	HCNode * parentNode;	
 	HCTree* tree = new HCTree();
 
-	/* insert things into buildQueue, highest priority first*/
+	for (int i = 0; i < this->leaves.size(); ++i) {
+		if(freqs[i] > 0) {
+			minHeap.push(new HCNode(freqs[i], i));
+		}
+	}
+	
+	while (minHeap.size() != 1) {
+		smallerNode = minHeap.top();
+		minHeap.pop();
+		
+		largerNode = minHeap.top();
+		minHeap.pop();
+
+		parentNode = new HCNode(smallerNode->count + largerNode->count, smallerNode->symbol, smallerNode, largerNode, 0);
+	
+		minHeap.push(parentNode);
+
+	}
+
+	this->root = minHeap.top();
+
+}
+
+
+
+
+
+/*
+//	* insert things into buildQueue, highest priority first*
 	while(!copy.empty())
 	{
 		currNode = HCNode(freqs[i], i);
@@ -40,7 +63,7 @@ using namespace std;
 
 
 
-	/* extract the two smallest, add them together, reinsert into the minHeap until there's only one left */
+	* extract the two smallest, add them together, reinsert into the minHeap until there's only one left *
 	while(minHeap.size() > 1) {
 		smallerNode = HCNode(minHeap.top()->count, minHeap.top()->symbol);
 		minHeap.pop();
@@ -52,7 +75,7 @@ using namespace std;
 	
 	tree->root = (HCNode*)&minHeap.top();
     }
-
+*/
     /** Write to the given BitOutputStream
      *  the sequence of bits coding the given symbol.
      *  PRECONDITION: build() has been called, to create the coding
@@ -74,14 +97,17 @@ using namespace std;
 	 * symbol, get that frequency, then we search starting at the
 	 * root of the tree for that frequency */
 	while(i < this->leaves.size()) {
-		if (this->leaves[i]->symbol = symbol) {
-			freq = this->leaves[i]->count;
-			break;
-		} else { 
-			i++;
+		if (this->leaves[i]) {
+			if (this->leaves[i]->symbol = symbol) {
+				freq = this->leaves[i]->count;
+				break;
+			} else { 
+				i++;
+			}
 		}
+		i++;
 	} 
-
+	
 	if(freq = 0) { return; }
 
 	/* i think we just travel the tree looking for the symbol
