@@ -102,7 +102,7 @@ using namespace std;
 	/* go through the leaves vector, find the leaf containing the
 	 * symbol, get that frequency, then we search starting at the
 	 * root of the tree for that frequency */
-	while(i < this->leaves.size()) {
+/*	while(i < this->leaves.size()) {
 		if (this->leaves[i]) {
 			if (this->leaves[i]->symbol == symbol) {
 				checkNode = this->leaves[i];
@@ -113,6 +113,8 @@ using namespace std;
 		}
 		i++;
 	} 
+*/
+	checkNode = this->leaves[symbol];
 	
 	if(checkNode == 0) { return; }
 
@@ -126,7 +128,7 @@ using namespace std;
 		if(currNode->p->c0 == currNode) {
 			//use 0
 			str.append("0");
-		} else {
+		} else if(currNode->p->c1 == currNode) {
 			//use 1
 			str.append("1");
 		}

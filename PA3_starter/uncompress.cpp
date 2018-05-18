@@ -24,15 +24,15 @@ int main(int argc, char** argv) {
 	
 	/**1. open the input file for reading*/
 	readIn.open(argv[1]);
-	char read;
+	string read;
 	int i = 0;
 	/* read the file header, store in freqs*/
 	while( i < freqs.size()) {
-		readIn.get(read);
-		if(read != '\n') {
-			freqs[i] = read - 48;
+		getline(readIn, read);
+//		if(!read.equals('\n')) {
+			freqs[i] = stoi(read);
 			i++;
-		}
+//		}
 	}
 	/*reconstruct the Huffman coding tree*/
 	HCTree* tree = new HCTree();
