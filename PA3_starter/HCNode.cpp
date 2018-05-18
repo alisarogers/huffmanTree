@@ -1,3 +1,6 @@
+#ifndef HCNODE_CPP
+#define HCNODE_CPP
+
 #include "HCTree.h"
 #include "HCNode.h"
 
@@ -28,3 +31,5 @@ bool HCNode::operator<(const HCNode& other) {
 	newNode.p = parent;
 }
 */
+
+#endif

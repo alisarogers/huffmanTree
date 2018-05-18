@@ -2,6 +2,10 @@
 #include <fstream>
 #include <vector>
 
+#include "HCTree.h"
+//#include "HCTree.cpp"
+#include "HCNode.h"
+//#include "HCNode.cpp"
 
 using namespace std;
 /*  compress.cpp needs to create a Huffman tree, read in a text file, encode it, insert it into the tree, and then write to a new file the encoding.
@@ -26,14 +30,20 @@ int main (int argc, char** argv)
 {
 	ifstream toCompress;
 	vector<int> freqs = vector<int>(256, 0);
+
+/*	vector<int> * freqs = new vector<int>;
+	for(int j = 0; j < 256; ++j) {
+		freqs->push_back(0);
+	}	
+*/
 	int i;
 	toCompress.open(argv[1]);
 	toCompress.seekg (0, toCompress.end);
 	int endOfFile = toCompress.tellg();
 	toCompress.seekg (0, toCompress.beg);
-	char * buffer = new char[endOfFile];
-	toCompress.read(buffer, endOfFile);
-	if(toCompress.is_open())
+//	char * buffer = new char[endOfFile];
+//	toCompress.read(buffer, endOfFile);
+/*	if(toCompress.is_open())
 	{
 		for(i = 0; i < endOfFile; i++)
 		{
@@ -45,5 +55,52 @@ int main (int argc, char** argv)
 
 		}
 	}
+*/
+
+	
+	char read;
+	
+	/* increases the frequency of each byte every time it occurs */
+	while(toCompress.peek() != EOF){
+		toCompress.get(read);
+		freqs[read] = freqs[read] + 1;
+	}
+
+	/* close the input file*/	
+	toCompress.close();
+
+	/* call BUILD */
+	HCTree* tree = new HCTree();
+	
+	tree->build(freqs);
+
+	ofstream toWrite;
+	toWrite.open(argv[2]);
+	
+	/* writes each frequency to a line of its own for the file header	*/
+	if(toWrite.is_open()) {
+		for(int i = 0; i < freqs.size(); i++) {
+			toWrite << freqs[i] << endl;
+		}
+	}
+
+	/* open the compressing file again*/
+	
+	toCompress.open(argv[1]);
+	toCompress.seekg (0, toCompress.beg);
+
+	/*7. Using the huffman coding tree, translate each byte from 
+	 * the input file into its code and append these codes as a 
+	 * sequence of bits to the output file after the header. 
+	 */
+	
+	while(toCompress.peek() != EOF){
+		toCompress.get(read);
+		tree->encode(read, toWrite);
+	}
+	
+	toCompress.close();
+	toWrite.close();
+
 }
 

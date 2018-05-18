@@ -1,3 +1,5 @@
+#ifndef HCTREE_CPP
+#define HCTREE_CPP
 #include "HCTree.h"
 
 using namespace std;
@@ -9,7 +11,7 @@ using namespace std;
      *  POSTCONDITION:  root points to the root of the trie,
      *  and leaves[i] points to the leaf node containing byte i.
      */
-    void build(const vector<int>& freqs) {
+    void HCTree::build(const vector<int>& freqs) {
 	priority_queue<HCNode*, vector<HCNode*>, HCNodePtrComp> minHeap;
 
 	vector<int> copy;
@@ -154,4 +156,4 @@ using namespace std;
 
     }
 
-
+#endif //HCTREE_CPP
