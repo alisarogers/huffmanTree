@@ -1,7 +1,8 @@
 #ifndef HCTREE_CPP
 #define HCTREE_CPP
 #include "HCTree.h"
-
+#include <string>
+#include <algorithm>
 using namespace std;
 
 
@@ -23,7 +24,8 @@ using namespace std;
 
 	for (int i = 0; i < this->leaves.size(); ++i) {
 		if(freqs[i] > 0) {
-			minHeap.push(new HCNode(freqs[i], i));
+			leaves[i] = new HCNode(freqs[i], i);
+			minHeap.push(leaves[i]);
 		}
 	}
 	
@@ -35,6 +37,8 @@ using namespace std;
 		minHeap.pop();
 
 		parentNode = new HCNode(smallerNode->count + largerNode->count, smallerNode->symbol, smallerNode, largerNode, 0);
+		smallerNode->p = parentNode;
+		largerNode->p = parentNode;
 	
 		minHeap.push(parentNode);
 
@@ -91,15 +95,17 @@ using namespace std;
      */
     void HCTree::encode(byte symbol, ofstream& out) const 
     {
-	int freq = 0;
-	int i = 0;
+	int checkFreq = 0;
+	int i = 0;	
+	string str;
+	HCNode * checkNode;
 	/* go through the leaves vector, find the leaf containing the
 	 * symbol, get that frequency, then we search starting at the
 	 * root of the tree for that frequency */
 	while(i < this->leaves.size()) {
 		if (this->leaves[i]) {
-			if (this->leaves[i]->symbol = symbol) {
-				freq = this->leaves[i]->count;
+			if (this->leaves[i]->symbol == symbol) {
+				checkNode = this->leaves[i];
 				break;
 			} else { 
 				i++;
@@ -108,38 +114,29 @@ using namespace std;
 		i++;
 	} 
 	
-	if(freq = 0) { return; }
+	if(checkNode == 0) { return; }
 
-	/* i think we just travel the tree looking for the symbol
+	/* i think we just travel the tree lookin`g for the symbol
 	 * and if we go left, print 0, and if we go right, print 1
 	*/
 
-	HCNode* currNode = HCTree::root;
-	
-	while(currNode)
-	{ 
-		if(currNode->symbol = symbol)
-		{
-			return;
-		} else if(currNode->c0->symbol = symbol)
-		{
-			//print 0;
-			out << 0;
-			return;
+	HCNode* currNode = checkNode;
+
+	while(currNode->p) {
+		if(currNode->p->c0 == currNode) {
+			//use 0
+			str.append("0");
+		} else {
+			//use 1
+			str.append("1");
 		}
-		else if(currNode->c0->symbol < symbol)
-		{
-			//print 0;
-			out << 1;
-			currNode = currNode->c1;
-		}
-		else if(symbol < currNode->c0->symbol)
-		{
-			//print 1;
-			currNode = currNode->c0;
-		}
+		currNode = currNode->p;
+
 	}
 
+	reverse(str.begin(), str.end());		
+
+	out << str;
     }
 
 
