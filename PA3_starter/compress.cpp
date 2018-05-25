@@ -26,7 +26,7 @@ each line contains a single int written as plain text
 int main (int argc, char** argv)
 {
 	ifstream toCompress;
-	toCompress.open(argv[1]);
+	toCompress.open(argv[1], ios::binary);
 
 	if(!toCompress) {
 		return 0;
@@ -56,23 +56,47 @@ int main (int argc, char** argv)
 		}
 	}
 */
-	if(toCompress.gcount() == 0) { return 1; }
+	if(!toCompress) {
+		return 0;
+	}
 
+	int length = 0;
+ 	if(toCompress) {
+     
+  	 	toCompress.seekg(0, toCompress.end);
+  		length = toCompress.tellg();
+		toCompress.seekg(0, toCompress.beg);
+	}
+ 	if(length == 0)
+	{ 
+     		toCompress.close();
+     
+		ofstream toWrite;
+		toWrite.open(argv[2], ios::binary);
+   	  	toWrite.close();
+    		 return 1; 
+	}
 	
 /* somehow check for empty file */
 
-
-	char read;
+	
+	int read;
 	int totalChars = 0;	
+	int index = 0;
 	/* increases the frequency of each byte every time it occurs */
-	while(toCompress.get(read)){
-		freqs[(int)read] = freqs[(int)read] + 1;
+	read = toCompress.get();
+	while(index < length){
+		freqs[read] = freqs[read] + 1;
 		totalChars++;	
+		read = toCompress.get();
+		index++;
 	}
 
 	totalChars--;
 	/* close the input file*/	
-	toCompress.close();
+	if(toCompress.is_open()) {
+		toCompress.close();
+	}
 
 	/* call BUILD */
 	HCTree* tree = new HCTree();
@@ -80,7 +104,7 @@ int main (int argc, char** argv)
 	tree->build(freqs);
 
 	ofstream toWrite;
-	toWrite.open(argv[2]);
+	toWrite.open(argv[2], ios::binary);
 		
 	if(!toWrite) { return 0; }
 
@@ -98,22 +122,28 @@ int main (int argc, char** argv)
 
 	/* open the compressing file again*/
 	
-	toCompress.open(argv[1]);
-	toCompress.seekg (0, toCompress.beg);
+	toCompress.open(argv[1], ios::binary);
+//	toCompress.seekg (0, toCompress.beg);
 
 	/*7. Using the huffman coding tree, translate each byte from 
 	 * the input file into its code and append these codes as a 
 	 * sequence of bits to the output file after the header. 
 	 */
-	
-	while(toCompress.get(read)){
+	int j = 0;
+		read = toCompress.get();
+	/** error here, didn't encode binary file*/	
+	while(j < totalChars +1){
+
 		tree->encode(read, *bitWrite);
+		read = toCompress.get();
+		j++;
 	}
 
  	bitWrite->flush();
 		
 	toWrite.close();
-	toCompress.close();
-
+	if(toCompress) {
+		toCompress.close();
+	}
 	return 0;
 }

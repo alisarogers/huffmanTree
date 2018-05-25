@@ -23,10 +23,24 @@ int main(int argc, char** argv) {
 	vector<int> freqs = vector<int>(256, 0);
 	
 	/**1. open the input file for reading*/
-	readIn.open(argv[1]);
-	if(readIn.gcount() == 0) {
-		return 1;
+	readIn.open(argv[1], ios::binary);
+	
+ 	int length = 0;
+ 	if(readIn) {
+     
+		readIn.seekg(0, readIn.end);
+		length = readIn.tellg();
+		readIn.seekg(0, readIn.beg);
+    	}
+ 	if(length == 0)
+ 	{ 
+		readIn.close();
+		ofstream toWrite;
+		toWrite.open(argv[2], ios::binary);
+		toWrite.close();
+ 		return 1;
 	}
+ 
 
 	BitInputStream * bitRead = new BitInputStream(readIn);
 	string read;
@@ -48,7 +62,7 @@ int main(int argc, char** argv) {
 
 	/* open the output file for writing*/
 	ofstream toWrite;
-	toWrite.open(argv[2]);
+	toWrite.open(argv[2], ios::binary);
 
 	HCNode* currNode = tree->root;
 	
