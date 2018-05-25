@@ -13,21 +13,18 @@ public:
 	/** Initialize a BitOutputStream that will use the given
 	 * ostream for output.
 	 */
-	BitOutputStream(std::ostream & os) : out(os), buf(0), nbits(0) {
+	BitOutputStream(std::ostream & os) : out(os), buf(0), nbits(0){
 	//clear buffer and bit counter
-	}
 	
 	/** send the buffer to the output, and clear it */
-	void flush () {
-		out.put(buf);
-		out.flush();
-		buf = nbits = 0;
 	}
+	void flush ();
+
 
 	/** Write the least signfiicant bit of the argument to the bit
 	 * buffer, and increment the bit buffer index. but flush the 
 	 * buffer first, if it is full */
-	void writeBit(int i) {
+	void writeBit(int bit);
 		// is the bit buffer full? Then flush it
 
 		// write the least significant bit of i into the buffer
@@ -35,5 +32,6 @@ public:
 
 
 		//increment the index
-	}
-}
+	void writeByte(int byte);
+};/* dummy file */
+
