@@ -3,9 +3,7 @@
 #include <vector>
 
 #include "HCTree.h"
-//#include "HCTree.cpp"
 #include "HCNode.h"
-//#include "HCNode.cpp"
 
 using namespace std;
 /*  compress.cpp needs to create a Huffman tree, read in a text file, encode it, insert it into the tree, and then write to a new file the encoding.
@@ -37,33 +35,28 @@ int main (int argc, char** argv)
 	}	
 */
 	int i;
+	int totalChars = 0;
 	toCompress.open(argv[1]);
-///	toCompress.seekg (0, toCompress.end);
-//	int endOfFile = toCompress.tellg();
-//	toCompress.seekg (0, toCompress.beg);
-//	char * buffer = new char[endOfFile];
-//	toCompress.read(buffer, endOfFile);
-/*	if(toCompress.is_open())
-	{
-		for(i = 0; i < endOfFile; i++)
-		{
-				//toCompress.read(buffer, 8);
-
-			freqs[buffer[i]]++;
-
-			cout<<buffer[i]<<"  "<<freqs[buffer[i]]<<endl;
-
-		}
+	
+	if(!toCompress) {
+		// uh oh
+		return 0;
 	}
-*/
-	if(toCompress.gcount() == 0) { return 1; }
+
+
+
+	toCompress.seekg(0, ios::end);
+	if (toCompress.tellg() == 0) {
+		return 1;
+	}
+	toCompress.
 	
 	char read;
 	
 	/* increases the frequency of each byte every time it occurs */
 	while(toCompress.get(read)){
-//		toCompress.get(read);
 		freqs[(int)read] = freqs[(int)read] + 1;
+		totalChars++;
 	}
 
 	/* close the input file*/	
@@ -76,7 +69,9 @@ int main (int argc, char** argv)
 
 	ofstream toWrite;
 	toWrite.open(argv[2]);
-	
+
+	BitOutputStream * bitWrite = new BitOutputStream(toWrite);	
+
 	/* writes each frequency to a line of its own for the file header	*/
 	if(toWrite.is_open()) {
 		for(int i = 0; i < freqs.size(); i++) {
@@ -84,6 +79,9 @@ int main (int argc, char** argv)
 
 		}
 	}
+
+	/* writes the total chars so we can read them later */
+	toWrite << totalChars << endl;
 
 	/* open the compressing file again*/
 	
@@ -94,10 +92,9 @@ int main (int argc, char** argv)
 	 * the input file into its code and append these codes as a 
 	 * sequence of bits to the output file after the header. 
 	 */
-	
+
 	while(toCompress.get(read)){
-//		toCompress.get(read);
-		tree->encode(read, toWrite);
+		tree->encode(read, *bitWrite);
 	}
 	
 	toCompress.close();

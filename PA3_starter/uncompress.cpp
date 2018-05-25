@@ -27,16 +27,21 @@ int main(int argc, char** argv) {
 	if(readIn.gcount() == 0) {
 		return 1;
 	}
+
+	BitInputStream * bitRead = new BitInputStream(readIn);
 	string read;
 	int i = 0;
 	/* read the file header, store in freqs*/
 	while( i < freqs.size()) {
 		getline(readIn, read);
-//		if(!read.equals('\n')) {
 			freqs[i] = stoi(read);
 			i++;
-//		}
 	}
+
+	/* get the total chars*/
+	getline(readIn, read);
+	int totalChars = stoi(read);
+
 	/*reconstruct the Huffman coding tree*/
 	HCTree* tree = new HCTree();
 	tree->build(freqs);
@@ -47,7 +52,7 @@ int main(int argc, char** argv) {
 
 	HCNode* currNode = tree->root;
 
-	toWrite << tree->decode(readIn);
+	toWrite << tree->decode(*bitRead, totalChars);
 
 
 }

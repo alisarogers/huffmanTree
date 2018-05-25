@@ -53,7 +53,7 @@ public:
      *  PRECONDITION: build() has been called, to create the coding
      *  tree, and initialize root pointer and leaves vector.
      */
-//    void encode(byte symbol, BitOutputStream& out) const;
+    void encode(byte symbol, BitOutputStream& out) const;
 
     /** Write to the given ofstream
      *  the sequence of bits (as ASCII) coding the given symbol.
@@ -62,14 +62,14 @@ public:
      *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT 
      *  BE USED IN THE FINAL SUBMISSION.
      */
-    void encode(byte symbol, ofstream& out) const;
+//    void encode(byte symbol, ofstream& out) const;
 
 
     /** Return symbol coded in the next sequence of bits from the stream.
      *  PRECONDITION: build() has been called, to create the coding
      *  tree, and initialize root pointer and leaves vector.
      */
-//    int decode(BitInputStream& in) const;
+    string decode(BitInputStream& in, int maxChars) const;
 
     /** Return the symbol coded in the next sequence of bits (represented as 
      *  ASCII text) from the ifstream.
@@ -78,7 +78,7 @@ public:
      *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT BE USED
      *  IN THE FINAL SUBMISSION.
      */
-    string decode(ifstream& in) const;
+//    string decode(ifstream& in) const;
 
 };
 

@@ -6,9 +6,9 @@ class BitOutputStream {
 private:
 	char buf;	//one byte buffer of bits
 	int nbits;	//how many bits have been written
-	std::ostream & out; //reference to the output stream to use
 
 public:
+	std::ostream & out; //reference to the output stream to use
 	
 	/** Initialize a BitOutputStream that will use the given
 	 * ostream for output.

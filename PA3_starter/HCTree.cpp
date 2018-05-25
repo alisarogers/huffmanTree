@@ -52,34 +52,6 @@ using namespace std;
 
 
 
-/*
-//	* insert things into buildQueue, highest priority first*
-	while(!copy.empty())
-	{
-		currNode = HCNode(freqs[i], i);
-		tree->leaves[i] = &currNode;
-		i++;
-		minHeap.push(&currNode);
-		//popping for a vector
-	//	vector<int>::const_iterator it = freqs.begin();
-		copy.erase(copy.begin());
-	}
-
-
-
-	* extract the two smallest, add them together, reinsert into the minHeap until there's only one left *
-	while(minHeap.size() > 1) {
-		smallerNode = HCNode(minHeap.top()->count, minHeap.top()->symbol);
-		minHeap.pop();
-		largerNode = HCNode(minHeap.top()->count, minHeap.top()->symbol);
-		minHeap.pop();
-		parentNode = HCNode(smallerNode.count + largerNode.count, 0, &smallerNode, &largerNode, NULL);
-		minHeap.push(&parentNode);
-	}
-	
-	tree->root = (HCNode*)&minHeap.top();
-    }
-*/
     /** Write to the given BitOutputStream
      *  the sequence of bits coding the given symbol.
      *  PRECONDITION: build() has been called, to create the coding
@@ -93,27 +65,13 @@ using namespace std;
      *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT 
      *  BE USED IN THE FINAL SUBMISSION.
      */
-    void HCTree::encode(byte symbol, ofstream& out) const 
+    void HCTree::encode(byte symbol, BitOutputStream& out) const 
     {
 	int checkFreq = 0;
 	int i = 0;	
 	string str;
 	HCNode * checkNode;
-	/* go through the leaves vector, find the leaf containing the
-	 * symbol, get that frequency, then we search starting at the
-	 * root of the tree for that frequency */
-/*	while(i < this->leaves.size()) {
-		if (this->leaves[i]) {
-			if (this->leaves[i]->symbol == symbol) {
-				checkNode = this->leaves[i];
-				break;
-			} else { 
-				i++;
-			}
-		}
-		i++;
-	} 
-*/
+	
 	checkNode = this->leaves[symbol];
 	
 	if(checkNode == 0) { return; }
@@ -127,18 +85,18 @@ using namespace std;
 	while(currNode->p) {
 		if(currNode->p->c0 == currNode) {
 			//use 0
-			str.append("0");
+			out.writeBit(0);
 		} else if(currNode->p->c1 == currNode) {
 			//use 1
-			str.append("1");
+			out.writeBit(1);
 		}
 		currNode = currNode->p;
 
 	}
 
-	reverse(str.begin(), str.end());		
+//	reverse(str.begin(), str.end());		
 
-	out << str;
+//	out << str;
     }
 
 
@@ -156,21 +114,24 @@ using namespace std;
      *  IN THE FINAL SUBMISSION.
      */
 	
-    string HCTree::decode(ifstream& in) const {
+    string HCTree::decode(BitInputStream& in, int maxChars) const {
 	/* read in the bits, travel down the tree going left if it is
 	 * 0 and right if 1. when we reach a symbol, return that symbol		*/
 
 	HCNode* currNode = this->root;
-	string str;
 	char c;
+	string ret;
+	int i;
 	if(!(currNode->c0 || currNode->c1)) {
-		str.push_back(currNode->symbol);
+		ret = currNode->symbol;
 		currNode = this->root;
 	}
-	
-	while(in.get(c)) {	
+
+	/* when we read in c, we get 8 bits. */	
+	while(i < maxChars) {
+
+		in.readBit();	
 		if(!currNode) { break; }
-		c = c-48;
 		if (c == 1) 
 		{
 			currNode = currNode->c1;
@@ -179,11 +140,12 @@ using namespace std;
 			currNode = currNode->c0;
 		}
 		if(!(currNode->c0 || currNode->c1)) {
-			str.push_back(currNode->symbol);
+			ret.push_back(currNode->symbol);
+			i++;
 			currNode = this->root;
 		}
 	}
-	return str;
+	return ret;
 
     }
 

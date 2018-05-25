@@ -19,11 +19,7 @@ public:
 	}
 
 	/** Fill the buffer from the input */
-	void fill() 
-	{
-		buf = in.get();
-		nbits = 0;
-	}
+	void fill();
 
 
 	/** Read the next bit from the bit buffer. 
@@ -31,7 +27,7 @@ public:
 	 *  Return 1 if the bit read is 1
 	 *  Return 0 if the bit read is 0.
 	 */
-	int readBit() {
+	int readBit();
 		//If all bits in the buffer are read, fill the buffer
 		//first
 
@@ -40,7 +36,7 @@ public:
 		
 		//increment the index
 
-	}
+	
 
 
-}
+};

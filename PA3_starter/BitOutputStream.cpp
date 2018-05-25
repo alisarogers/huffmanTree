@@ -10,7 +10,7 @@ using namespace std;
 void BitOutputStream::flush()
 {
 	out.put(buf);
-	out.flush();
+//	out.flush();
 	buf = nbits = 0;
 }
 
@@ -22,7 +22,7 @@ void BitOutputStream::writeBit(int bit)
 	if(nbits == 8)
 	{
 		//I know we're calling flush on our BitOutputStream object, but im not sure im calling it right.
-		this->flush();
+		flush();
 	}
 	//from discussion slides
 	buf = (buf | (bit <<(7 - nbits)));
@@ -49,26 +49,5 @@ void BitOutputStream::writeByte(int byte)
 	{
 		writeBit(byte);
 	}
-}
-//Purely for testing
-int main(int argc, char** argv)
-{
-	ofstream writing;
-	//int i;
-	writing.open(argv[1]);
-	//create ostream to give as argument to initialize BitOutputStream
-	ostream & output = writing;
-
-
-	BitOutputStream * kstream = new BitOutputStream(output);
-	//string test = "01001010";
-	unsigned int i = 01001010;
-	//for(i = 0; i < test.length(); i++){
-
-		kstream->writeByte(i);
-	kstream->flush();
-	writing.close();
-
-	//}
 }
 #endif
