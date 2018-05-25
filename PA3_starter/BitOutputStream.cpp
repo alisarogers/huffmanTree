@@ -17,7 +17,7 @@ void BitOutputStream::flush()
 /*Use bitwise OR operation to update buff with the next bit*/
 void BitOutputStream::writeBit(int bit)
 {
-	char bit_rep = 0;
+//	char bit_rep = 0;
 	//cout<<"Second bit:"<<bit<<endl;
 	if(nbits == 8)
 	{
@@ -26,11 +26,11 @@ void BitOutputStream::writeBit(int bit)
 	}
 	//from discussion slides
 	buf = (buf | (bit <<(7 - nbits)));
-	bit_rep = (bit_rep | (bit<<(7-nbits)));
+//	bit_rep = (bit_rep | (bit<<(7-nbits)));
 	/*idk why but this next line makes it work, for some reason it doesnt 
 	  seem like buf updates correctly*/
 
-	buf = bit_rep;
+//	buf = bit_rep;
 	//tests
 	//cout<<"Third bit: "<<(bit <<(7 - nbits))<<endl;
 	//cout<< "Char_Rep: "<<buf<< endl;

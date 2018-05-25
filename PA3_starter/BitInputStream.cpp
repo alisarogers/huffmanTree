@@ -17,7 +17,7 @@
 
 		//get the bit at the appropriate location in the bit
 		//buffer, and return the appropriate int
-		ret = (buf >> nbits) & 0x1;
+		ret = (buf >> (7 - nbits)) & 0x1;
 
 
 	

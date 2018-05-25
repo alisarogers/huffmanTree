@@ -26,6 +26,12 @@ each line contains a single int written as plain text
 int main (int argc, char** argv)
 {
 	ifstream toCompress;
+	toCompress.open(argv[1]);
+
+	if(!toCompress) {
+		return 0;
+	}	
+
 	vector<int> freqs = vector<int>(256, 0);
 
 /*	vector<int> * freqs = new vector<int>;
@@ -34,7 +40,7 @@ int main (int argc, char** argv)
 	}	
 */
 	int i;
-	toCompress.open(argv[1]);
+//	toCompress.open();
 ///	toCompress.seekg (0, toCompress.end);
 //	int endOfFile = toCompress.tellg();
 //	toCompress.seekg (0, toCompress.beg);
@@ -51,15 +57,20 @@ int main (int argc, char** argv)
 	}
 */
 	if(toCompress.gcount() == 0) { return 1; }
+
 	
+/* somehow check for empty file */
+
+
 	char read;
-	
+	int totalChars = 0;	
 	/* increases the frequency of each byte every time it occurs */
 	while(toCompress.get(read)){
-//		toCompress.get(read);
 		freqs[(int)read] = freqs[(int)read] + 1;
+		totalChars++;	
 	}
 
+	totalChars--;
 	/* close the input file*/	
 	toCompress.close();
 
@@ -70,6 +81,10 @@ int main (int argc, char** argv)
 
 	ofstream toWrite;
 	toWrite.open(argv[2]);
+		
+	if(!toWrite) { return 0; }
+
+	BitOutputStream * bitWrite = new BitOutputStream(toWrite);
 	
 	/* writes each frequency to a line of its own for the file header	*/
 	if(toWrite.is_open()) {
@@ -78,6 +93,8 @@ int main (int argc, char** argv)
 
 		}
 	}
+
+	toWrite << totalChars << endl;
 
 	/* open the compressing file again*/
 	
@@ -90,11 +107,13 @@ int main (int argc, char** argv)
 	 */
 	
 	while(toCompress.get(read)){
-//		toCompress.get(read);
-		tree->encode(read, toWrite);
+		tree->encode(read, *bitWrite);
 	}
-	
-	toCompress.close();
-	toWrite.close();
 
+ 	bitWrite->flush();
+		
+	toWrite.close();
+	toCompress.close();
+
+	return 0;
 }

@@ -69,7 +69,7 @@ using namespace std;
     {
 	int checkFreq = 0;
 	int i = 0;	
-	string str;
+	string str = "";
 	HCNode * checkNode;
 	
 	checkNode = this->leaves[symbol];
@@ -85,18 +85,27 @@ using namespace std;
 	while(currNode->p) {
 		if(currNode->p->c0 == currNode) {
 			//use 0
-			out.writeBit(0);
+			str.append("0");
 		} else if(currNode->p->c1 == currNode) {
 			//use 1
-			out.writeBit(1);
+			str.append("1");
 		}
 		currNode = currNode->p;
 
 	}
 
-//	reverse(str.begin(), str.end());		
+	reverse(str.begin(), str.end());		
+	
+	while(!(str.empty())) {
+		if(str.at(0) == '0') {
+			out.writeBit(0);
+		} else if (str.at(0) == '1') {
+			out.writeBit(1);
+		}
+		str.erase(0,1);
+	}
 
-//	out << str;
+
     }
 
 
@@ -119,18 +128,19 @@ using namespace std;
 	 * 0 and right if 1. when we reach a symbol, return that symbol		*/
 
 	HCNode* currNode = this->root;
-	char c;
+	unsigned char c;
 	string ret;
-	int i;
+	int i = 0;
 	if(!(currNode->c0 || currNode->c1)) {
 		ret = currNode->symbol;
 		currNode = this->root;
-	}
+	}	
+
 
 	/* when we read in c, we get 8 bits. */	
-	while(i < maxChars) {
+	while(i <= maxChars) {
 
-		in.readBit();	
+		c = in.readBit();	
 		if(!currNode) { break; }
 		if (c == 1) 
 		{

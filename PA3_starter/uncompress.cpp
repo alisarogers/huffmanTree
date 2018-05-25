@@ -51,6 +51,7 @@ int main(int argc, char** argv) {
 	toWrite.open(argv[2]);
 
 	HCNode* currNode = tree->root;
+	
 
 	toWrite << tree->decode(*bitRead, totalChars);
 
